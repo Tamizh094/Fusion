@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  2 15:27:19 2022
-
-@author: Tamizharasan
-"""
 import base64
 import streamlit as st
 
