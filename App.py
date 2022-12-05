@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Dec  2 12:03:57 2022
+Created on Sat Dec  3 13:09:30 2022
 
 @author: Tamizharasan
 """
@@ -9,9 +9,13 @@ import pandas as pd
 import streamlit as st
 import Background
 
-df = pd.read_excel("MasterDatabase.xlsx")
+df_1 = pd.read_excel("MasterDatabase.xlsx", sheet_name='Cutting')
+df_2 = pd.read_excel("MasterDatabase.xlsx", sheet_name='Piercing')
 
-df['Date'] = df['Date'].dt.date
+df_1['Date'] = df_1['Date'].dt.date
+#df_2['Date'] = df_2['Date'].dt.date
+ipg = ['YLR 2.0/4.0 kW - HPP','YLR 3.0 kW', 'YLR 3.0/5.0 kW - HPP']
+nLight = ['Corona CFX 4 kW', 'Standard CFL 4 kW', 'Corona CFX 5 kW']
 
 st.set_page_config(page_title='Machine Database', layout='wide', 
                    page_icon = None)
@@ -28,39 +32,47 @@ if page == 'About':
              ### This web app contains cutting parameters of all the ***Machines***""")
              
 elif page == 'View Data':
-    st.subheader("Cutting Parameter database:")
+    options = ['Cutting', 'Piercing']
+    option = st.sidebar.radio("Please Select Data Option:", options)
+    if option == 'Cutting':
+        st.write("### Cutting Parameter database:")
     
-    Machine = st.sidebar.multiselect('Please Select Machine Model', 
-                             options = df['Machine'].unique()
-                             )
+        Machine = st.sidebar.multiselect('Please Select Machine Model', 
+                             options = df_1['Machine'].unique())
+                                             
     
-    L_Make = st.sidebar.selectbox("Please Select Laser Make",
-                                  options = df['L_Make'].unique())
+        Laser_Make = st.sidebar.selectbox("Please Select Laser Make",
+                                  options = df_1['Laser_Make'].unique(),
+                                  )
+        if Laser_Make == 'IPG':
     
-    L_Model = st.sidebar.multiselect("Please Select Laser Model",
-                                    options = df['L_Model'].unique())
+            Laser_Model = st.sidebar.multiselect("Please Select Laser Model",
+                                    options = ipg)
+        else:
+            Laser_Model = st.sidebar.multiselect("Please Select Laser Model", 
+                                            options = nLight)
 
-    Material = st.sidebar.selectbox("Please Select Material Type",
-                                      options= df['Material'].unique())
+        Material = st.sidebar.selectbox("Please Select Material Type",
+                                      options= df_1['Material'].unique())
     
-    Thickness = st.sidebar.multiselect("Please Select Material Thickness",
-                                       options = df['Thickness'].unique())
+        Thickness = st.sidebar.multiselect("Please Select Material Thickness",
+                                       options = df_1['Thickness'].unique())
     
-    df_selection = df.query(
-        "Machine == @Machine & Material == @Material& Thickness == @Thickness & L_Make == @L_Make & L_Model == @L_Model")
+        df_selection = df_1.query(
+            "Machine == @Machine & Material == @Material& Thickness == @Thickness & Laser_Make == @Laser_Make & Laser_Model == @Laser_Model")
     
-    df_selection = df_selection.transpose()
-    df_selection.index.set_names("Details", inplace = True)
-    df_selection.reset_index(inplace=True)
-    
-    
-
-    
-    st.dataframe(df_selection)
+        df_selection = df_selection.transpose()
+        df_selection.index.set_names("Details", inplace = True)
+        df_selection.reset_index(inplace=True)
+        st.dataframe(df_selection)
+    else:
+        st.write("### Piercing Parameter DataBase:")
+        
+        
     
 else:
     st.write("""## This Page is under development 
-             ### This is entry page to enter values in it and save it in database""")
+                This is the entry page to enter values on and save them in the database.""")
     
     
     
