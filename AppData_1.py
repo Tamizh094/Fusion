@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec  3 13:09:30 2022
-
-@author: Tamizharasan
-"""
-
 import pandas as pd
 import streamlit as st
 import Background
